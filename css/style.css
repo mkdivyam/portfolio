@@ -23,3 +23,45 @@ h1 em{font-style:italic;font-weight:400;color:var(--accent)}
 #theme{position:fixed;top:calc(1rem + env(safe-area-inset-top,0px));right:1rem;background:none;border:1px solid var(--muted);color:var(--muted);border-radius:99px;padding:.15rem .7rem;cursor:pointer;font:inherit}
 #theme:hover{color:var(--fg)}
 @media(prefers-reduced-motion:reduce){.d,.pencil{animation:none;stroke-dashoffset:0}.status{transition:none}}
+
+/* Background doodles */
+main{position:relative;z-index:1}
+#theme{z-index:2}
+.doodles{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.dd{position:absolute;left:var(--x);top:var(--y);width:var(--s,3.4rem);height:auto;color:var(--muted);opacity:.38;
+fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;
+transform:rotate(var(--r,0deg));animation:float 8s ease-in-out infinite;animation-delay:var(--d,0s)}
+.dd.acc{color:var(--accent);opacity:.5}
+@keyframes float{0%,100%{transform:rotate(var(--r,0deg))}50%{transform:translateY(-9px) rotate(calc(var(--r,0deg) + 4deg))}}
+@media(max-width:900px){.dd.w{display:none}}
+@media(max-width:520px){.dd{opacity:.22;width:calc(var(--s,3.4rem)*.75)}.dd.acc{opacity:.32}}
+@media(prefers-reduced-motion:reduce){.dd{animation:none}}
+
+/* Doodles */
+main,#theme{position:relative;z-index:1}#theme{position:fixed;z-index:2}
+.doodles{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.dd{position:absolute;width:var(--s,64px);height:var(--s,64px);color:var(--fg);opacity:.12;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;transform:rotate(var(--r,0deg));animation:bob 10s ease-in-out infinite;animation-delay:var(--d,0s)}
+.dd.ac{color:var(--accent);opacity:.24}
+@keyframes bob{50%{transform:rotate(var(--r,0deg)) translateY(-10px)}}
+@media(max-width:700px){.dd{width:calc(var(--s)*.65);height:calc(var(--s)*.65)}.dd.hm{display:none}}
+@media(prefers-reduced-motion:reduce){.dd{animation:none}}
+
+/* Background doodles */
+main{position:relative;z-index:1}
+#theme{z-index:2}
+.doodles{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.dd{position:absolute;width:clamp(2.6rem,5vw,4.2rem);height:auto;color:var(--muted);opacity:.32;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transform:rotate(var(--r,0deg));animation:bob 8s ease-in-out infinite;animation-delay:calc(var(--d,0)*-1s)}
+.dd.hi{color:var(--accent);opacity:.45}
+@keyframes bob{50%{transform:rotate(var(--r,0deg)) translateY(-9px)}}
+@media(max-width:640px){.dd:nth-of-type(n+7){display:none}.dd{opacity:.22}}
+@media(prefers-reduced-motion:reduce){.dd{animation:none}}
+
+/* Work chip + no-scroll fit */
+body{min-height:100dvh}
+.sketch{max-height:30vh}
+.chip{display:inline-flex;align-items:center;gap:.7rem;margin-top:1.6rem;padding:.55rem 1.2rem;border:1px solid var(--accent);border-radius:99px;color:var(--muted);text-decoration:none;font:400 .82rem var(--mono);transition:background .25s,color .25s}
+.chip b{color:var(--accent);font-weight:400;transition:color .25s,transform .25s}
+.chip:hover,.chip:focus-visible{background:var(--accent);color:var(--bg);outline:none}
+.chip:hover b,.chip:focus-visible b{color:var(--bg);transform:translateX(3px)}
+@media(max-height:620px){h1{margin:1rem 0 .6rem}.name{margin-bottom:1rem}.chip{margin-top:1rem}}
+@media(prefers-reduced-motion:reduce){.chip,.chip b{transition:none}}

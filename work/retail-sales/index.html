@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-G0TR4KXT0Q"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-G0TR4KXT0Q');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Retail Sales Analysis · Divyanshu Medatwal</title>
+<meta name="description" content="A SQL case study on profitability, retention and trends in retail data.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;1,9..144,400&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/site.css">
+</head>
+<body>
+<div class="wrap">
+<div class="top">
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="../../">Home</a><i>/</i><a href="../">Work</a><i>/</i>Retail Sales</nav>
+  <button id="theme" aria-label="Toggle theme">◐</button>
+</div>
+
+<p class="draft">DRAFT LAYOUT. All figures, findings and results below are placeholders. Replace them with your real analysis.</p>
+
+<h1>Where does a retailer actually <em>make</em> its money?</h1>
+<p class="lead">A SQL deep-dive into profitability, customer retention and seasonal trends in retail sales data.</p>
+<div class="tags"><span>SQL</span><span>CTEs</span><span>Window functions</span><span>Retention analysis</span></div>
+
+<h2>The business question</h2>
+<p>Leadership saw revenue growing but suspected profit wasn't keeping pace. The questions: which categories earn their keep, when does the business peak, and are customers coming back?</p>
+
+<h2>What I found</h2>
+<div class="stats">
+  <div class="stat"><b>17%</b>profit margin in the best category</div>
+  <div class="stat"><b>7%</b>margin in the weakest, despite steady sales</div>
+  <div class="stat"><b>Q4</b>delivers the biggest seasonal spike</div>
+</div>
+<figure>
+  <div class="chart" data-type="line" data-title="Monthly profit, sample data" data-labels="J,F,M,A,M,J,J,A,S,O,N,D" data-values="42,45,43,48,52,50,55,58,54,61,72,80"></div>
+  <figcaption>Fig. 1: Monthly profit (sample data). A festive-season climb into Q4.</figcaption>
+</figure>
+<figure>
+  <div class="chart" data-type="bar" data-title="Profit margin by category, sample data" data-labels="Technology,Office,Furniture" data-values="17,14,7"></div>
+  <figcaption>Fig. 2: Profit margin % by category (sample data).</figcaption>
+</figure>
+
+<h2>How I approached it</h2>
+<p>Cleaned the order data, then built category and month aggregates in a CTE so every later step reads from one tidy base. Window functions handled month-over-month change without self-joins. Assumptions and edge cases are noted in the repo.</p>
+
+<h2>The key query</h2>
+<pre><code class="sql">WITH monthly AS (
+  SELECT category,
+         DATE_TRUNC('month', order_date) AS month,
+         SUM(profit) AS profit,
+         SUM(sales)  AS sales
+  FROM orders
+  GROUP BY 1, 2
+)
+-- margin and month-over-month change, per category
+SELECT category, month,
+       ROUND(profit / NULLIF(sales, 0) * 100, 1) AS margin_pct,
+       profit - LAG(profit) OVER (PARTITION BY category ORDER BY month) AS mom_change
+FROM monthly
+ORDER BY category, month;</code></pre>
+<div class="tbl"><table>
+  <tr><th>category</th><th>month</th><th>margin_pct</th><th>mom_change</th></tr>
+  <tr><td>Furniture</td><td>2024-10</td><td>6.8</td><td>+1,240</td></tr>
+  <tr><td>Furniture</td><td>2024-11</td><td>7.1</td><td>+3,870</td></tr>
+  <tr><td>Technology</td><td>2024-11</td><td>17.4</td><td>+5,210</td></tr>
+</table></div>
+
+<h2>What I'd recommend</h2>
+<div class="rec"><p>Rework pricing and discounting on the low-margin category before Q4, and put marketing weight behind the highest-margin lines during the seasonal peak. Placeholder: add the expected impact here.</p></div>
+
+<div class="foot">
+  <a href="https://github.com/mkdivyam/sql-portfolio">View the full code on GitHub →</a>
+  <span class="bud">🌱 More projects are growing</span>
+</div>
+</div>
+<script src="../../js/site.js"></script>
+</body>
+</html>
